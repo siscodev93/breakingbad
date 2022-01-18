@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Character;
+use App\Services\BreakingBadClient;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
@@ -17,3 +19,19 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+
+Artisan::command("breakingbadinit", function( BreakingBadClient $api ) {
+
+    $characters = $api->characters();
+
+    
+    $characters->map(function($character) {
+        $x = new Character( $character->resolve() );
+        $x->save();
+
+        //might as well free the memory
+        return null;
+    });
+
+})->purpose("init the database with breaking bad characters");
